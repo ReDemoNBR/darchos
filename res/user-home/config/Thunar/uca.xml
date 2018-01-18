@@ -1,0 +1,64 @@
+<?xml encoding="UTF-8" version="1.0"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Terminal</name>
+	<unique-id>1508531106047520-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Open Terminal Emulator here</description>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>thunar</icon>
+	<name>Thunar Root</name>
+	<unique-id>1508531579333142-5</unique-id>
+	<command>pkexec thunar %f</command>
+	<description>Open Thunar as Root</description>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>emblem-symbolic-link</icon>
+	<name>Create Symlink to Home</name>
+	<unique-id>1508531593381314-6</unique-id>
+	<command>ln -s %f ~/</command>
+	<description>Create a Symbolic Link to Home Directory</description>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>giteye</icon>
+	<name>Gitk</name>
+	<unique-id>1509333572999479-1</unique-id>
+	<command>gitk --all</command>
+	<description>Open Gitk</description>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>gitg</icon>
+	<name>Git remote update</name>
+	<unique-id>1509333763622829-3</unique-id>
+	<command>exo-open --launch TerminalEmulator git remote update -p</command>
+	<description>Update the remote repository</description>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>nodejs</icon>
+	<name>NPM Install</name>
+	<unique-id>1509333976470420-5</unique-id>
+	<command>exo-open --launch TerminalEmulator npm install</command>
+	<description>Install NPM dependencies of this project</description>
+	<patterns>package.json</patterns>
+	<other-files/>
+	<text-files/>
+</action>
+</actions>

@@ -1,0 +1,23 @@
+[Desktop Entry]
+Name=Anjuta
+Name[en_GB]=Anjuta
+GenericName=Integrated Development Environment
+GenericName[en_GB]=Integrated Development Environment
+Comment=Develop software in an integrated development environment
+Comment[en_GB]=Develop software in an integrated development environment
+Keywords=IDE;development;programming;
+Keywords[en_GB]=IDE;development;programming;
+Exec=anjuta %U
+Icon=anjuta
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Categories=GNOME;GTK;Development;IDE;
+StartupNotify=true
+MimeType=application/x-anjuta;application/x-anjuta-project-template;application/x-anjuta-compressed-project-template;inode/directory;
+X-GNOME-DocPath=anjuta/anjuta-manual.xml
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=anjuta
+X-GNOME-Bugzilla-Version=3.22.0
+X-GNOME-Bugzilla-Component=unknown
+X-XFCE-Source=file:///usr/share/applications/anjuta.desktop

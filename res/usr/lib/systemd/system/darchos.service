@@ -1,0 +1,12 @@
+[Unit]
+Description=Mantain DArchOS override on top of ArchLinuxARM
+After=sysinit.target
+
+[Service]
+Type=oneshot
+ExecStart=
+ExecStop=/usr/lib/systemd/scripts/darchos.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target
