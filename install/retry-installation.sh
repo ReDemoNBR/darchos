@@ -1,44 +1,45 @@
 #!/bin/bash
 
-username=$1
+## functions
+source lib/yaourt.sh
+source lib/message.sh
+
+## constants
+source conf/darchos.conf
 
 clear
 
-function init() {
-    echo -n "${1}..."
-}
-function end() {
-    if [[ -n $1 ]]; then
-        echo " $1"
-    else
-        echo " done"
-    fi
-}
-
 init "Checking if any installed package was updated in the mean time"
-su --login "$username" --command "yaourt -Syua --noconfirm &> /dev/null" &> /dev/null
+update_aur
 end
 
-echo -e "Checking if any of the packages was not installed in order to try again now...\n"
-if [[ ! -f /darchos/packages.txt ]]; then
-    echo "Could not find /darchos/packages.txt file when trying to find packages that were not installed" | tee --append /darchos/errors.txt
+subtitle "Checking if any of the packages was not installed in order to try again now"
+if [[ ! -f $PACKAGES_FILE ]]; then
+    echo "Could not find $PACKAGES_FILE file when trying to find packages that were not installed" | tee --append $ERROR_FILE
     exit 1
 fi
 
 while read -r package; do
     if [[ -z $( pacman -Qqs ^${package}$ ) ]]; then
-        init "Retrying to install ${package} using yaourt"
-        su --login "$username" --command "yaourt -Sy --noconfirm $package &> /dev/null"
+        echo "Retrying to install ${package} using yaourt"
+        refresh_aur
+        install_aur $package
         if [[ $? -ne 0 ]]; then
-            echo ""
-            end "Retried unsuccessfully to install package $package with yaourt" | tee --append /darchos/errors.txt
-        else
-            end
+            echo "Retried unsuccessfully to install package $package with yaourt" | tee --append $ERROR_FILE
+            echo "$package" >> $FAILED_PACKAGES_FILE
         fi
     fi
-done < /darchos/packages.txt
+done < $PACKAGES_FILE
 
 init "Removing list of packages as they all were installed"
-rm /darchos/packages.txt
+rm $PACKAGES_FILE
 end
-sleep 5
+
+if [[ ! -f $FAILED_PACKAGES_FILE || -z $( cat $FAILED_PACKAGES_FILE ) ]]; then
+    rm $FAILED_PACKAGES_FILE
+    finish "All packages correctly installed"
+else
+    echo "This is the list of packages that could not be installed"
+    cat $FAILED_PACKAGES_FILE
+    finish "These were the packages that could not be installed\nYou should be able to find this file in $FAILED_PACKAGES_FILE_AFTER"
+fi

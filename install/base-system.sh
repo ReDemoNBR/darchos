@@ -1,22 +1,23 @@
 #!/bin/bash
 
-clear
-echo -e "Installing initial packages...\n"
+## functions
+source lib/message.sh
+source lib/pacman.sh
 
-function install() {
-    bash install/pacman-install.sh "$@"
-}
+clear
+title "Installing initial packages"
 
 ## Install ArchLinux and ArchLinuxARM keyrings
 install archlinux-keyring archlinuxarm-keyring
 ## Install ca-certificates
 install ca-certificates ca-certificates-utils ca-certificates-cacert ca-certificates-mozilla
 ## Update all packages
-echo -n "Updating all installed packages..."
-pacman -Syyu --noconfirm &> /dev/null
-echo " done"
-## Install basic packages
-install base base-devel coreutils yajl wget git tk vi vim bash-completion
+subtitle "Updating all installed packages"
+update_system
 
-echo "Base system installed"
-sleep 5
+## Install basic packages
+install base base-devel coreutils
+## Install initial util
+install bash-completion git icu tk vi vim wget yajl
+
+finish "Base system installed"

@@ -1,46 +1,35 @@
 #!/bin/bash
 
-username=$1
+## functions
+source lib/copy-files.sh
+source lib/message.sh
 
-function init() {
-    echo -n "${1}..."
-}
-function end() {
-    echo " done"
-}
-
-function copy() {
-    init "Creating .$1"
-    ## recursive copy if its a directory
-    if [[ -d "/darchos/res/user-home/$1" ]]; then
-        init " It's a directory, so copying recursively"
-        su --login "$username" --command "cp --recursive --force \"/darchos/res/user-home/$1\" \"/home/${username}/.$1\""
-    else
-        su --login "$username" --command "cp --force \"/darchos/res/user-home/$1\" \"/home/${username}/.$1\""
-    fi
-    end
-}
-
-
+## constants
+source conf/darchos.conf
+source config.txt
 
 clear
-echo -e "Configurating ${username}'s home...\n"
+n=$((${#USER_NAME}-1))
+if [[ "${USER_NAME:$n:1}" == "s" ]]; then
+    title "Configurating ${USER_NAME}' home"
+else
+    title "Configurating ${USER_NAME}'s home"
+fi
 
-echo "Copying configuration files..."
-copy "bash_profile"
-copy "bashrc"
-copy "extend.bashrc"
-copy "nanorc"
-copy "dir_colors"
-copy "icons"
-copy "config"
-copy "tmp.sh"
+subtitle "Copying configuration files"
+copy_user "bash_profile"
+copy_user "bashrc"
+copy_user "extend.bashrc"
+copy_user "nanorc"
+copy_user "dir_colors"
+copy_user "icons"
+copy_user "config"
+copy_user "tmp.sh"
 
 
-echo "Adding desktop icons to desktop..."
-## Adding icons/launchers/shortcuts to desktop
-desktop_icons=("audacious" "audacity" "bluefish" "catfish" "chromium" "cpu-g" "dbvis" "dia" "engrampa" "firefox" "galculator" "gcolor2"
-               "gimp" "gpick" "inkscape" "libreoffice-startcenter" "libreoffice-calc" "libreoffice-impress" "libreoffice-writer" "mousepad"
+subtitle "Adding desktop icons to desktop"
+desktop_icons=("audacious" "bluefish" "catfish" "chromium" "cpu-g" "dbvis" "dia" "engrampa" "firefox" "galculator" "gcolor2"
+               "gimp" "gpick" "libreoffice-startcenter" "libreoffice-calc" "libreoffice-impress" "libreoffice-writer" "mousepad"
                "org.gnome.Calculator" "org.kde.kolourpaint" "org.xfce.Parole" "pamac-manager" "pamac-updater" "pix" "qbittorrent"
                "ristretto" "terminator" "terminology" "thunderbird" "vlc" "xed" "xfce4-terminal" "xplayer" "xreader" "xviewer")
 
@@ -48,20 +37,21 @@ for icon in "${desktop_icons[@]}"; do
     file="/usr/share/applications/${icon}.desktop"
     if [[ -f $file ]]; then
         init "Adding $icon to desktop"
-        su --login "$username" --command "xdg-desktop-icon install --novendor $file &> /dev/null" &> /dev/null
+        su --login "$USER_NAME" --command "xdg-desktop-icon install --novendor $file &> /dev/null" &> /dev/null
         end
     else
-        echo "Could not find file $file" | tee --append /darchos/errors.txt
+        echo "Could not find file $file" | tee --append $ERROR_FILE
     fi
 done
 
 init "Creating an autostart script for first usage"
-su --login "$username" --command "echo [Desktop Entry] > /home/${username}/.config/autostart/arrange.desktop"
-su --login "$username" --command "echo Type=Application >> /home/${username}/.config/autostart/arrange.desktop"
-su --login "$username" --command "echo Name=Arrange Desktop at first use >> /home/${username}/.config/autostart/arrange.desktop"
-su --login "$username" --command "echo Exec=bash /home/${username}/.tmp.sh >> /home/${username}/.config/autostart/arrange.desktop"
+script=$(echo -e "\
+[Desktop Entry]\n\
+Type=Application\n\
+Name=Arrange Desktop at first use\n\
+Exec=bash /home/$USER_NAME/.tmp.sh")
+su --login "$USER_NAME" --command "mkdir --parents /home/${USER_NAME}/.config/autostart"
+su --login "$USER_NAME" --command "echo \"$script\" > /home/${USER_NAME}/.config/autostart/arrange.desktop"
 end
 
-
-echo "User setup done"
-sleep 5
+finish "User setup done"

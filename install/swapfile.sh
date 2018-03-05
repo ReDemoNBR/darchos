@@ -1,32 +1,34 @@
 #!/bin/bash
 
-size=$1
+## functions
+source lib/message.sh
 
-clear
-echo -e "Creating swapfile with ${size}B size...\n"
+## constants
+source config.txt
 
-function init {
-    echo -n "${1}..."
-}
-function end {
-    echo " done"
-}
+if [[ -z $SWAPFILE_SIZE ]]; then
+    finish "No swapfile creation"
+    exit 0
+fi
 
-init "Alocating"
-fallocate --length "$size" /swapfile &> /dev/null
-end
-init "Adjusting permissions"
-chmod 600 /swapfile &> /dev/null
-end
-init "Setting up"
-mkswap /swapfile &> /dev/null
-end
-init "Enabling"
-swapon /swapfile &> /dev/null
-end
-init "Adding to fstab so it loads on boot"
-echo "/swapfile none swap defaults 0 0" >> /etc/fstab
-end
+title "Creating swapfile with ${SWAPFILE_SIZE}B size"
 
-echo "Swapfile created"
-sleep 5
+if [[ -z $( grep /swapfile /etc/fstab ) ]]; then
+    init "Alocating"
+    fallocate --length "$SWAPFILE_SIZE" /swapfile &> /dev/null
+    prog "Adjusting permissions"
+    chmod 600 /swapfile &> /dev/null
+    prog "Setting up"
+    mkswap /swapfile &> /dev/null
+    prog "Enabling"
+    swapon /swapfile &> /dev/null
+    end
+    init "Adding to fstab so it loads on boot"
+    echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+    end
+else
+    prog "Not needed (already done)"
+    end
+fi
+
+finish "Swapfile created"

@@ -1,44 +1,32 @@
 #!/bin/bash
 
-rootpasswd=$1
-username=$2
-userpasswd=$3
+## functions
+source lib/message.sh
+source lib/change-password.sh
 
-function change_pw() {
-    user=$1
-    password=$2
-    bash install/change-passwd.sh "$user" "$password"
-}
-
-function init() {
-    echo -n "${1}..."
-}
-function end() {
-    echo " done"
-}
+## constants
+source config.txt
 
 clear
-echo -e "Managing users...\n"
+title "Managing users"
 
-echo "Removing all users with home..."
+init "Removing all existing users with home"
 for user in $(cat /etc/passwd | grep /home/ | cut --delimiter ":" --fields 1); do
-    init "Deleting user $user"
+    prog "deleting $user"
 	userdel --remove --force "$user" &> /dev/null
-    end
 done
+end
 
-init "Creating user $username"
+init "Creating user $USER_NAME"
 # Create user in wheel group
-useradd --create-home --gid users --groups disk,lp,network,optical,power,scanner,storage,video,wheel --shell /bin/bash "$username"
+useradd --create-home --groups "disk,lp,network,optical,power,scanner,storage,video,wheel" --shell "/bin/bash" "$USER_NAME"
 end
 
-init "Creating XDG compliant directories for user $username"
-su --login "$username" --command "cd /home/$username ; mkdir Documents Downloads Music Pictures Public Templates Videos"
+init "Creating XDG compliant directories for user $USER_NAME"
+su --login "$USER_NAME" --command "cd /home/$USER_NAME ; mkdir Documents Downloads Music Pictures Public Templates Videos"
 end
 
-bash install/change-passwd.sh "$username" "$userpasswd"
+change_password "$USER_NAME" "$USER_PASSWORD"
+change_password "root" "$ROOT_PASSWORD"
 
-bash install/change-passwd.sh "root" "$rootpasswd"
-
-echo "User managing done"
-sleep 5
+finish "User managing done"

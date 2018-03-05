@@ -1,12 +1,14 @@
 #!/bin/bash
 
-username=$1
+## functions
+source lib/pacman.sh
+source lib/yaourt.sh
+source lib/message.sh
 
 clear
-echo -e "Installing some funny packages...\n"
+title "Installing some funny packages"
 
-bash install/pacman-install.sh asciiquarium cowsay ponysay sl
-bash install/yaourt-install.sh -u "$username" bsod
+install asciiquarium cowsay ponysay sl
+install_aur bsod funny-manpages
 
-echo "Funny packages installed"
-sleep 5
+finish "Funny packages installed"

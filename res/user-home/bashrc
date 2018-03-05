@@ -33,7 +33,7 @@ colors() {
 
 [[ -f ~/.extend.bashrc ]] && . ~/.extend.bashrc
 
-[ -r /usr/share/bash-completion/bash_completion   ] && . /usr/share/bash-completion/bash_completion
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 
 if [ $TERMINIX_ID ] || [ $VTE_VERSION ]; then
         source /etc/profile.d/vte.sh
@@ -41,3 +41,9 @@ fi
 
 export VISUAL="micro"
 export EDITOR="micro"
+
+weather() {
+    curl -L "http://wttr.in/$*"
+}
+export -f weather
+alias cd..="cd .."

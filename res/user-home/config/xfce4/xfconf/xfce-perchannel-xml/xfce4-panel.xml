@@ -53,6 +53,7 @@
         <value type="string" value="blueman-applet"/>
       </property>
       <property name="show-frame" type="bool" value="false"/>
+      <property name="size-max" type="uint" value="30"/>
     </property>
     <property name="plugin-7" type="string" value="whiskermenu"/>
     <property name="plugin-8" type="string" value="launcher">

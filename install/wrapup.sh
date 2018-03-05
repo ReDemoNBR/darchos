@@ -1,41 +1,39 @@
 #!/bin/bash
 
+## functions
+source lib/message.sh
+source lib/daemon-control.sh
+source lib/copy-files.sh
+
+## constants
+source conf/darchos.conf
+
 clear
-echo -e "Finishing installation...\n"
+title "Finishing installation"
 
-function init() {
-    echo -n "${1}..."
-}
-function end() {
-    echo " done"
-}
-
-init "Copying useful DArchOS files to /etc/darchos"
+init "Copying useful DArchOS files to $DARCHOS_END_FOLDER"
 ## transfer user home standard configs
-mkdir --parents /etc/darchos/userconf
-cp --recursive --force "/darchos/res/user-home" "/etc/darchos/userconf"
+copy "/user-home" "${DARCHOS_END_FOLDER}/userconf"
 end
 
-init "Copying installation error log file to /etc/darchos"
-cp --force "/darchos/errors.txt" "/etc/darchos/errors-on-install.log"
+init "Copying installation error log file to $DARCHOS_END_FOLDER"
+copy_gen "$ERROR_FILE" "$ERROR_FILE_AFTER"
+[[ -f $FAILED_PACKAGES_FILE ]] && copy_gen "$FAILED_PACKAGES_FILE" "$FAILED_PACKAGES_FILE_AFTER"
 end
 
-init "Backing up os-release"
-cp /darchos/res/usr/lib/os-release /etc/darchos/os-release
+init "Copying up os-release"
+copy "/usr/lib/os-release" "${DARCHOS_END_FOLDER}/os-release"
 end
 
-init "Disabling auto-run of first-boot script"
+init "Disabling auto-run of first-boot install script"
 rm --force --recursive "/etc/systemd/system/getty@tty1.service.d"
-cp --force "/darchos/res/etc/systemd/logind.conf" "/etc/systemd/logind.conf"
+copy "/etc/systemd/logind.conf"
 end
 
 init "Removing DArchOS installation files"
-rm --force --recursive "/darchos"
+rm --force --recursive "$DARCHOS_FOLDER"
 end
 
-init "Enabling lightdm service"
-systemctl enable lightdm.service &> /dev/null
-end
+daemonctl -e lightdm
 
-echo "Installing done..."
-sleep 5
+finish "Installing done"

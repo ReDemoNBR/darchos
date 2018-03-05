@@ -10,8 +10,8 @@ Command=xfce4-taskmanager
 InTerminal=0
 StartupNotification=1
 ColorMode=1
-Foreground1=#999999999999
-Foreground2=#dbdbdbdbdbdb
+Foreground1=#0000bcbcd4d4
+Foreground2=#e1e1f7f7fafa
 Foreground3=#00000000ffff
-Background=#303030303030
+Background=#131319191c1c
 

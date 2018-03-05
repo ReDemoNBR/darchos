@@ -9,8 +9,8 @@
 
 ### Insults on wrong sudo password
 Defaults    insults
-### Set default editor to nano
-Defaults    editor=/usr/bin/nano, !env_editor
+### Set default editor to micro
+Defaults    editor=/usr/bin/micro, !env_editor
 
 ##
 ## Host alias specification
@@ -44,7 +44,7 @@ Defaults    editor=/usr/bin/nano, !env_editor
 # Defaults env_keep += "LANG LANGUAGE LINGUAS LC_* _XKB_CHARSET"
 ##
 ## Run X applications through sudo; HOME is used to find the
-## .Xauthority file.  Note that other programs use HOME to find   
+## .Xauthority file.  Note that other programs use HOME to find
 ## configuration files and this may lead to privilege escalation!
 # Defaults env_keep += "HOME"
 ##

@@ -1,13 +1,24 @@
 #!/bin/bash
 
-tmpsize=$1
+## functions
+source lib/message.sh
 
-clear
-echo -e "Resizing /tmp temporary file system to ${tmpsize}B...\n"
+## constants
+source config.txt
 
-echo -n "Adding configuration to fstab..."
-echo "tmpfs /tmp tmpfs rw,nodev,nosuid,size=$tmpsize 0 0" >> /etc/fstab
-echo " done"
+if [[ -z $TMP_SIZE ]]; then
+    finish "No /tmp tmpfs resize"
+    exit 0
+fi
+title "Resizing /tmp temporary file system to ${TMP_SIZE}B"
 
-echo "/tmp resized to ${tmpsize}B"
-sleep 5
+init "Adding configuration to fstab"
+if [[ -z $( grep /tmp /etc/fstab ) ]]; then
+    echo "tmpfs /tmp tmpfs rw,nodev,nosuid,size=$TMP_SIZE 0 0" >> /etc/fstab
+    end
+else
+    prog "Not needed (already done)"
+    end
+fi
+
+finish "/tmp resized to ${TMP_SIZE}B from next boot"
