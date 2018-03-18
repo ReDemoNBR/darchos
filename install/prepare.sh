@@ -17,6 +17,13 @@ title "Preparing system to install"
 
 [[ -z $WIFI_SSID || -z $WIFI_PASS ]] && daemonctl -D "wpa_supplicant"
 
+if [[ -n $SSH ]]; then
+    if [[ "$SSH" == 0 ]]; then
+        daemonctl -D sshd
+    else
+        daemonctl -E sshd
+    fi
+fi
 init "Creating log files"
 touch $PACKAGES_FILE
 touch $ERROR_FILE
@@ -37,24 +44,6 @@ end
 init "Initializing pacman"
 pacman-key --init &> /dev/null
 refresh_pacman
-end
-
-init "Ranking best mirrors"
-# Use best mirrors
-pacman -S --force --noconfirm pacman-mirrorlist &> /dev/null
-cp --force /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-cp --force /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
-## Uncomment all mirrors
-sed --in-place '/Server = /s/^#\s*//g' /etc/pacman.d/mirrorlist.tmp
-## Remove all commented lines
-sed --in-place '/^#/ d' /etc/pacman.d/mirrorlist.tmp
-## Remove GeoIP in order to rank mirrors without it
-sed --in-place '/^Server = http:\/\/mirror.archlinuxarm.org/ d' /etc/pacman.d/mirrorlist
-rankmirrors -n 0 /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
-## Re-add GeoIP as last resort for pacman mirrors
-echo 'Server = http://mirror.archlinuxarm.org/$arch/$repo' >> /etc/pacman.d/mirrorlist
-refresh_pacman
-rm /etc/pacman.d/mirrorlist.tmp
 end
 
 ## Adding ArchStrike repository is different from the others

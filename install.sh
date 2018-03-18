@@ -8,7 +8,8 @@ function run() {
     local script="install/${1}.sh" status
     cd "$path_here"
     if [[ -f $script ]]; then
-        bash "$script"
+        [[ ! -x $script ]] && chmod u+x "$script"
+        $script
         status=$?
         [[ $status -ne 0 ]] && exit $status
     else

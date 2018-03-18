@@ -28,7 +28,7 @@ fi
 
 ## test internet connection
 init "Testing internet"
-ping -c 4 8.8.8.8 &> /dev/null
+ping -q -w 1 -c 4 8.8.8.8 &> /dev/null
 if [[ $? -ne 0 ]]; then
 	end "fail"
 	exit 1

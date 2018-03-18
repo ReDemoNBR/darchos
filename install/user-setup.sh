@@ -9,8 +9,7 @@ source conf/darchos.conf
 source config.txt
 
 clear
-n=$((${#USER_NAME}-1))
-if [[ "${USER_NAME:$n:1}" == "s" ]]; then
+if [[ "${USER_NAME:(-1)}" == "s" ]]; then
     title "Configurating ${USER_NAME}' home"
 else
     title "Configurating ${USER_NAME}'s home"
@@ -20,6 +19,8 @@ subtitle "Copying configuration files"
 copy_user "bash_profile"
 copy_user "bashrc"
 copy_user "extend.bashrc"
+copy_user "exports.bashrc"
+copy_user "aliases.bashrc"
 copy_user "nanorc"
 copy_user "dir_colors"
 copy_user "icons"

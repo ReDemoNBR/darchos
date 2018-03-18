@@ -60,3 +60,22 @@ function update_system() {
 function check_install() {
     [[ -n $( pacman -Sqs ^${1}$ ) && -z $( pacman -Qqs ^${1}$ ) ]] && install $1
 }
+
+function rank_pacman_mirrors() {
+    local pacman_dir="/etc/pacman.d"
+    # Use best mirrors
+    pacman -S --noconfirm pacman-mirrorlist &> /dev/null
+    cp --force "${pacman_dir}/mirrorlist" "${pacman_dir}/mirrorlist.bak"
+    cp --force "${pacman_dir}/mirrorlist" "${pacman_dir}/mirrorlist.tmp"
+    ## Uncomment all mirrors
+    sed --in-place '/Server = /s/^#\s*//g' "${pacman_dir}/mirrorlist.tmp"
+    ## Remove all commented lines
+    sed --in-place '/^#/ d' "${pacman_dir}/mirrorlist.tmp"
+    ## Remove GeoIP in order to rank mirrors without it
+    sed --in-place '/^Server = http:\/\/mirror.archlinuxarm.org/ d' "${pacman_dir}/mirrorlist"
+    rankmirrors -n 0 "${pacman_dir}/mirrorlist.tmp" > "${pacman_dir}/mirrorlist"
+    ## Re-add GeoIP as last resort for pacman mirrors
+    echo 'Server = http://mirror.archlinuxarm.org/$arch/$repo' >> "${pacman_dir}/mirrorlist"
+    refresh_pacman
+    rm "${pacman_dir}/mirrorlist.tmp"
+}

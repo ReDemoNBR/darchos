@@ -24,7 +24,7 @@ install mesa xf86-video-vesa xf86-video-fbdev
 # Install audio
 install alsa-firmware alsa-utils pulseaudio pulseaudio-alsa
 # Install desktop environment (Xfce)
-install xfce4 xfce4-goodies exo thunar thunar-archive-plugin thunar-media-tags-plugin xdg-utils xdg-user-dirs engrampa parole catfish
+install xfce4 xfce4-goodies exo thunar thunar-archive-plugin thunar-media-tags-plugin xdg-utils xdg-user-dirs engrampa parole catfish file-roller unrar
 install_aur xdg-su mugshot
 # Install packages to automount USB
 install gvfs udisks2 thunar-volman
