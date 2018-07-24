@@ -28,10 +28,17 @@ fi
 
 ## test internet connection
 init "Testing internet"
-ping -q -w 1 -c 4 8.8.8.8 &> /dev/null
-if [[ $? -ne 0 ]]; then
-	end "fail"
-	exit 1
+ping -q -w 10 -c 4 8.8.8.8 &> /dev/null
+if [[ $? -eq 0 ]]; then
+    end "OK"
+    exit 0
 else
-	end "OK"
+    ## try again if error happened
+    ping -q -w 10 -c 4 8.8.8.8 &> /dev/null
+    if [[ $? -ne 0 ]]; then
+    	end "fail"
+    	exit 1
+    else
+    	end "OK"
+    fi
 fi

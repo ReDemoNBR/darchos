@@ -6,5 +6,5 @@ show_label_governor=false
 show_warning=true
 keep_compact=true
 one_line=false
-fontname=Roboto 10
+fontname=Roboto 12
 
