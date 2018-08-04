@@ -41,9 +41,6 @@ install galculator gnome-calculator
 install gimp graphicsmagick imagemagick kolourpaint
 install_langs gimp-help gimp
 
-## JDK/JRE
-install jdk9-openjdk jre9-openjdk jre9-openjdk-headless
-
 # Office
 install libreoffice-fresh
 install_aur libreoffice-extension-languagetool
@@ -63,21 +60,10 @@ install_langs thunderbird-i18n thunderbird
 install qbittorrent
 
 # Development
-install bluefish dia nodejs npm
+install bluefish dia
 install_aur dbvis
-install_aur micro-git
-install_langs vim-spell vim
 
 # Utils
-install hdparm htop screenfetch gparted parted linux-tools neofetch
 install_aur cpu-g-bzr
-
-# Aspell, hunspell and hyphen
-install aspell
-install_langs aspell
-install hunspell
-install_langs hunspell
-install hyphen
-install_langs hyphen
 
 finish "Util applications installed"

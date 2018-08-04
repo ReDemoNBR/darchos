@@ -1,17 +1,26 @@
 #!/bin/bash
 
+
 full_path="$( pwd -P )/$0"
 cd "${full_path%/*}"
 path_here=$( pwd )
 
+source config.txt
+source conf/darchos.conf
+
 function run() {
     local script="install/${1}.sh" status
     cd "$path_here"
-    if [[ -f $script ]]; then
+    ## skip running scripts if it is the server version and is in the list of standard version only
+    if [[ -n "$SERVER_VERSION" && -n $( echo "${STANDARD_VERSION_ONLY_SCRIPTS[*]}" | grep --word-regexp "$1") ]]; then
+        echo "$script is exclusive to DArchOS standard version... skipping"
+        return
+    fi
+    if [[ -f "$script" ]]; then
         [[ ! -x $script ]] && chmod u+x "$script"
         $script
-        status=$?
-        [[ $status -ne 0 ]] && exit $status
+        status="$?"
+        [[ "$status" -ne 0 ]] && exit "$status"
     else
         echo "$script file not found"
     fi
@@ -20,8 +29,8 @@ function run() {
 run "wifi"
 
 clear
-echo "Waiting 10 seconds so internet connection is fully stabilished..."
-sleep 10
+echo "Waiting $WAIT_SECONDS_FOR_INTERNET seconds so internet connection is fully stabilished..."
+sleep "$WAIT_SECONDS_FOR_INTERNET"
 
 run "errors"
 
@@ -36,17 +45,20 @@ run "hardware-specific"
 run "general-configs"
 run "swapfile"
 run "resize-tmp"
+run "minimal-packages"
+run "dev-packages"
 run "essential-system"
 run "util-applications"
 run "themes"
 run "funny-packages"
 run "retry-installation"
-run "user-setup"
+run "user-minimal-setup"
+run "user-extended-setup"
 run "system-setup"
 run "wrapup"
 
 clear
 echo "Rebooting system..."
-sleep 5
+sleep "$SLEEP_TIME"
 
 shutdown --reboot now

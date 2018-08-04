@@ -30,7 +30,8 @@ touch $ERROR_FILE
 touch $FAILED_PACKAGES_FILE
 end
 
-copy "/etc/pacman.conf"
+copy "/etc/pacman_${ARCH}.conf" "/etc/pacman.conf"
+copy "/etc/pacman.d/repos.conf"
 copy "/etc/motd"
 copy "/etc/locale.gen"
 ## adding hooks for linux kernel upgrades
@@ -47,7 +48,8 @@ refresh_pacman
 end
 
 ## Adding ArchStrike repository is different from the others
-for repo in "${REPOSITORIES[@]}"; do
+repositories="REPOSITORIES_${ARCH^^}[@]"
+for repo in "${!repositories}"; do
     add_repository "$repo"
 done
 

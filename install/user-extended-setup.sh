@@ -15,18 +15,7 @@ else
     title "Configurating ${USER_NAME}'s home"
 fi
 
-subtitle "Copying configuration files"
-copy_user "bash_profile"
-copy_user "bashrc"
-copy_user "extend.bashrc"
-copy_user "exports.bashrc"
-copy_user "aliases.bashrc"
-copy_user "nanorc"
-copy_user "dir_colors"
-copy_user "icons"
-copy_user "config"
 copy_user "tmp.sh"
-
 
 subtitle "Adding desktop icons to desktop"
 desktop_icons=("audacious" "bluefish" "catfish" "chromium" "cpu-g" "dbvis" "dia" "engrampa" "firefox" "galculator" "gcolor2"
@@ -55,4 +44,4 @@ su --login "$USER_NAME" --command "mkdir --parents /home/${USER_NAME}/.config/au
 su --login "$USER_NAME" --command "echo \"$script\" > /home/${USER_NAME}/.config/autostart/arrange.desktop"
 end
 
-finish "User setup done"
+finish "User extended setup done"

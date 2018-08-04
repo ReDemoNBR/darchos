@@ -10,7 +10,7 @@ title "Installing initial packages"
 ## Install ArchLinux and ArchLinuxARM keyrings
 install archlinux-keyring archlinuxarm-keyring
 ## Install ca-certificates
-install ca-certificates ca-certificates-utils ca-certificates-cacert ca-certificates-mozilla
+install ca-certificates ca-certificates-utils ca-certificates-mozilla
 ## Install pacman utils
 install pacman-contrib
 
@@ -26,6 +26,6 @@ update_system
 ## Install base core packages
 install base base-devel coreutils ncurses
 ## Install initial util packages
-install bash-completion git icu net-tools tk traceroute vi vim wget yajl
+install bash-completion git icu net-tools tk traceroute wget yajl
 
 finish "Base system installed"

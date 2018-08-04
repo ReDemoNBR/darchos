@@ -57,14 +57,14 @@ function add_repository {
     else
         init "Adding $pretty_name mirror to pacman configuration"
     fi
-    if [[ -z $( cat $PACMAN_CONF_FILE | grep $mirror ) ]]; then
-        cp --force "$PACMAN_CONF_FILE" "$PACMAN_CONF_BACKUP_FILE"
-        echo "[${name}]" >> $PACMAN_CONF_FILE
-        [[ -n $siglevel ]] && echo "SigLevel = ${siglevel^}" >> $PACMAN_CONF_FILE
-        echo -e "Server = ${mirror}\n" >> $PACMAN_CONF_FILE
+    if [[ -z $( cat $REPOSITORIES_CONF_FILE | grep $mirror ) ]]; then
+        cp --force "$REPOSITORIES_CONF_FILE" "$REPOSITORIES_CONF_BACKUP_FILE"
+        echo "[${name}]" >> $REPOSITORIES_CONF_FILE
+        [[ -n $siglevel ]] && echo "SigLevel = ${siglevel^}" >> $REPOSITORIES_CONF_FILE
+        echo -e "Server = ${mirror}\n" >> $REPOSITORIES_CONF_FILE
         refresh_pacman
         if [[ $? -ne 0 ]]; then
-            return_backup_conf "$PACMAN_CONF_FILE" "$PACMAN_CONF_BACKUP_FILE"
+            return_backup_conf "$REPOSITORIES_CONF_FILE" "$REPOSITORIES_CONF_BACKUP_FILE"
             echo "$pretty_name repository could not be added" >> $ERROR_FILE
             end
         else
@@ -84,16 +84,16 @@ function add_repository {
                 init "Adding $pretty_name repository permanently"
                 treat_mirror=${mirror%%/\$*}
                 treat_mirror=${treat_mirror//"/"/"\/"}
-                sed --in-place "/^Server = ${treat_mirror}/ d" $PACMAN_CONF_FILE
-                echo "Include = $mirrorlist" >> $PACMAN_CONF_FILE
+                sed --in-place "/^Server = ${treat_mirror}/ d" $REPOSITORIES_CONF_FILE
+                echo "Include = $mirrorlist" >> $REPOSITORIES_CONF_FILE
                 refresh_pacman
                 if [[ $? -ne 0 ]]; then
-                    return_backup_conf "$PACMAN_CONF_FILE" "$PACMAN_CONF_BACKUP_FILE"
+                    return_backup_conf "$REPOSITORIES_CONF_FILE" "$REPOSITORIES_CONF_BACKUP_FILE"
                     echo "$pretty_name repository could not be added after using his mirrorlist" >> $ERROR_FILE
                 fi
                 end
             fi
-            rm "$PACMAN_CONF_BACKUP_FILE"
+            rm "$REPOSITORIES_CONF_BACKUP_FILE"
         fi
     else
         end "$pretty_name repository already added"
