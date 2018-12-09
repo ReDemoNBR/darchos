@@ -9,6 +9,7 @@ source conf/darchos.conf
 
 function refresh_pacman() {
     pacman -Syy &> /dev/null
+    pacman -Fyy &> /dev/null
 }
 
 function install() {
