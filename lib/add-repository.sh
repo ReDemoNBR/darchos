@@ -21,7 +21,7 @@ function return_backup_conf {
 function add_repository {
     local repo REPO
     local key_prop mirror_prop mirrorlist_prop name_prop packages_prop pretty_name_prop
-    local key mirror mirrorlist name packages=() pretty_name treat_mirror
+    local key mirror mirrorlist name packages=() pretty_name treat_mirror status
 
     repo=$1
     REPO=${repo^^}
@@ -33,14 +33,16 @@ function add_repository {
     packages_prop="${REPO}_PACKAGES[@]"
     pretty_name_prop="${REPO}_PRETTY_NAME"
     siglevel_prop="${REPO}_SIGLEVEL"
+    required_prop="${REPO}_REQUIRED"
 
     key=${!key_prop}
     mirror=${!mirror_prop}
     mirrorlist=${!mirrorlist_prop}
     name=${!name_prop}
-    packages=("${!packages_prop}")
+    read -a packages <<< "${!packages_prop}"
     pretty_name=${!pretty_name_prop}
     siglevel=${!siglevel_prop}
+    required=${!required_prop}
     if [[ -z $mirror ]]; then
         echo "$repo mirror not found" >> $ERROR_FILE
         exit 1
@@ -59,7 +61,7 @@ function add_repository {
     fi
     if [[ -z $( cat $REPOSITORIES_CONF_FILE | grep $mirror ) ]]; then
         cp --force "$REPOSITORIES_CONF_FILE" "$REPOSITORIES_CONF_BACKUP_FILE"
-        echo "[${name}]" >> $REPOSITORIES_CONF_FILE
+        echo -e "\n[${name}]" >> $REPOSITORIES_CONF_FILE
         [[ -n $siglevel ]] && echo "SigLevel = ${siglevel^}" >> $REPOSITORIES_CONF_FILE
         echo -e "Server = ${mirror}\n" >> $REPOSITORIES_CONF_FILE
         refresh_pacman
@@ -85,11 +87,20 @@ function add_repository {
                 treat_mirror=${mirror%%/\$*}
                 treat_mirror=${treat_mirror//"/"/"\/"}
                 sed --in-place "/^Server = ${treat_mirror}/ d" $REPOSITORIES_CONF_FILE
-                echo "Include = $mirrorlist" >> $REPOSITORIES_CONF_FILE
+                printf %s "$(cat $REPOSITORIES_CONF_FILE)" > $REPOSITORIES_CONF_FILE ## remove trailing lines
+                echo -e "\nInclude = $mirrorlist" >> $REPOSITORIES_CONF_FILE
                 refresh_pacman
                 if [[ $? -ne 0 ]]; then
-                    return_backup_conf "$REPOSITORIES_CONF_FILE" "$REPOSITORIES_CONF_BACKUP_FILE"
-                    echo "$pretty_name repository could not be added after using his mirrorlist" >> $ERROR_FILE
+                    refresh_pacman # try again
+                    if [[ $? -ne 0 ]]; then
+                        return_backup_conf "$REPOSITORIES_CONF_FILE" "$REPOSITORIES_CONF_BACKUP_FILE"
+                        if [[ -n $required ]]; then
+                            echo "Could not add repository ${repo}... trying again"
+                            add_repository ${repo}
+                        else
+                            echo "$pretty_name repository could not be added after using his mirrorlist" >> $ERROR_FILE
+                        fi
+                    fi
                 fi
                 end
             fi

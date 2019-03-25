@@ -50,7 +50,7 @@ install_langs libreoffice-fresh
 install terminator terminology
 
 # Color picker
-install gcolor2 gpick
+install gcolor2 gcolor3 gpick
 
 # Mail reader
 install thunderbird

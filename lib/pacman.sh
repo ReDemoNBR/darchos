@@ -8,7 +8,10 @@ source conf/darchos.conf
 
 
 function refresh_pacman() {
+    local status
     pacman -Syy &> /dev/null
+    status=$?
+    [[ $status -ne 0 ]] && exit $status
     pacman -Fyy &> /dev/null
 }
 

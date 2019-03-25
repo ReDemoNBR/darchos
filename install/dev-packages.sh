@@ -20,10 +20,10 @@ clear
 title "Installing development packages"
 
 ## JDK/JRE
-install jdk10-openjdk jre10-openjdk jre10-openjdk-headless
+install jdk-openjdk jre-openjdk jre-openjdk-headless
 
 # Development
-install nodejs npm
+install nodejs npm lynx
 
 # Text editors
 install vi vim

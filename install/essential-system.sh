@@ -22,6 +22,7 @@ install mesa xf86-video-vesa xf86-video-fbdev
 install alsa-firmware alsa-utils pulseaudio pulseaudio-alsa
 # Install desktop environment (Xfce)
 install xfce4 xfce4-goodies exo thunar thunar-archive-plugin thunar-media-tags-plugin xdg-utils xdg-user-dirs engrampa parole catfish file-roller unrar
+install lynx ## required for building xdg-su
 install_aur xdg-su mugshot
 # Install packages to automount USB
 install gvfs udisks2 thunar-volman
@@ -29,9 +30,5 @@ install gvfs udisks2 thunar-volman
 install lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 # Install pamac (graphical interface to manage packages)
 install_aur pamac-aur pamac-tray-appindicator
-# Syntax highlighting for nano text editor
-install_aur nano-syntax-highlighting-git
-# Gnome keyrings
-install gnome-keyring
 
 finish "Essential packages installed"

@@ -32,8 +32,9 @@ end
 
 copy "/etc/pacman_${ARCH}.conf" "/etc/pacman.conf"
 copy "/etc/pacman.d/repos.conf"
-copy "/etc/motd"
+# copy "/etc/motd"
 copy "/etc/locale.gen"
+
 ## adding hooks for linux kernel upgrades
 copy "/usr/share/libalpm/hooks/update-os-release.hook"
 copy "/usr/share/libalpm/scripts/update-os-release.sh"
@@ -44,13 +45,20 @@ end
 
 init "Initializing pacman"
 pacman-key --init &> /dev/null
+pacman-key --populate &> /dev/null
 refresh_pacman
 end
 
+install archlinux-keyring archlinuxarm-keyring
+pacman-key --populate &> /dev/null
+
 ## Adding ArchStrike repository is different from the others
-repositories="REPOSITORIES_${ARCH^^}[@]"
-for repo in "${!repositories}"; do
+arch_repo="REPOSITORIES_${ARCH^^}"
+read -a repositories <<< "${!arch_repo}"
+for repo in "${repositories[@]}"; do
     add_repository "$repo"
 done
+
+pacman-key --populate &> /dev/null
 
 finish "Preparing done"

@@ -9,8 +9,8 @@ clear
 title "Installing themes and styles"
 
 # Fonts
-install ttf-dejavu ttf-fira-mono ttf-fira-sans ttf-freefont ttf-monaco ttf-opensans ttf-roboto
-install_aur ttf-fira-code ttf-roboto-mono ttf-roboto-slab
+install ttf-dejavu ttf-fira-mono ttf-fira-sans ttf-fira-code ttf-freefont ttf-monaco ttf-opensans ttf-roboto
+install_aur ttf-roboto-slab
 
 # Adapta
 install adapta-gtk-theme papirus-icon-theme

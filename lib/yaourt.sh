@@ -9,25 +9,25 @@ source config.txt
 
 
 function refresh_aur() {
-    su --login "$USER_NAME" --command "yaourt -Syya &> /dev/null" &> /dev/null
+    pikaur -Syy &> /dev/null
 }
 
 function install_aur() {
     local package error attempts message_template1 message_template2 backspaces
-    yaourt -Sya &> /dev/null
+    pikaur -Sy &> /dev/null
     for package in "$@"; do
         [[ -z $( cat $PACKAGES_FILE | grep --line-regexp $package ) ]] && echo "$package" >> $PACKAGES_FILE
     done
     for package in "$@"; do
-        if [[ -n $( yaourt -Qqs $package | grep --line-regexp $package ) ]]; then
+        if [[ -n $( pikaur -Qqs $package | grep --line-regexp $package ) ]]; then
             echo "$package already installed" >> $ERROR_FILE
-        elif [[ -z $( yaourt -Sqs $package | grep --line-regexp $package ) ]]; then
+        elif [[ -z $( pikaur -Sqs $package | grep --line-regexp $package ) ]]; then
             echo "$package not found by yaourt" >> $ERROR_FILE
         else
             attempts=0
             error=""
             init "Installing package with yaourt: $package"
-            while su --login "$USER_NAME" --command "yaourt -S --noconfirm $package &> /dev/null" &> /dev/null; [[ $? -ne 0 && $attempts -lt $MAX_ATTEMPTS ]]; do
+            while pikaur -S --noedit --noconfirm $package &> /dev/null; [[ $? -ne 0 && $attempts -lt $MAX_ATTEMPTS ]]; do
                 ((attempts++))
                 message_template1=" failed (attempt #"
                 message_template2=")... "
@@ -42,7 +42,7 @@ function install_aur() {
                 fi
                 if [[ $attempts -lt $MAX_ATTEMPTS ]]; then
                     echo "Error while installing ${package}... attempt $attempts" >> $ERROR_FILE
-                    yaourt -Syya &> /dev/null
+                    pikaur -Syy &> /dev/null
                 else
                     end "Giving up... will try again in another moment"
                     echo "Gave up trying to install package $package with yaourt" >> $ERROR_FILE
@@ -55,12 +55,12 @@ function install_aur() {
 }
 
 function update_aur() {
-    su --login "$USER_NAME" --command "yaourt -Syyua --noconfirm &> /dev/null" &> /dev/null
+    pikaur -Syyu --noedit --noconfirm &> /dev/null
 }
 
 function check_install_aur() {
-    package=$( yaourt -Sqs $1 )
-    [[ -n $package && "$package" == "$1" && -z $( yaourt -Qqs $1 | grep --line-regexp $1 ) ]] && install_aur $1
+    package=$( pikaur -Sqs $1 )
+    [[ -n $package && "$package" == "$1" && -z $( pikaur -Qqs $1 | grep --line-regexp $1 ) ]] && install_aur $1
 }
 
 function search_language_packs() {

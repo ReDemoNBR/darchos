@@ -15,6 +15,7 @@ function execute() {
 
 title "Adding AUR support"
 execute "package-query"
-execute "yaourt"
+install "yaourt"
+install "pikaur"
 
 finish "AUR support needed packages installed"

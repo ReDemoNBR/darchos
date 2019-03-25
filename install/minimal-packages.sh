@@ -51,6 +51,6 @@ daemonctl -E bluetooth
 install avahi nss-mdns
 daemonctl -E avahi-daemon
 # Gnome keyrings
-install gnome-keyring
+install gnome-keyring gobject-introspection gobject-introspection-runtime
 
 finish "Minimal version packages installed"

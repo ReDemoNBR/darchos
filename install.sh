@@ -12,7 +12,7 @@ function run() {
     local script="install/${1}.sh" status
     cd "$path_here"
     ## skip running scripts if it is the server version and is in the list of standard version only
-    if [[ -n "$SERVER_VERSION" && -n $( echo "${STANDARD_VERSION_ONLY_SCRIPTS[*]}" | grep --word-regexp "$1") ]]; then
+    if [[ -n "$SERVER_VERSION" && -n $( echo "${STANDARD_VERSION_ONLY_SCRIPTS}" | grep --word-regexp "$1") ]]; then
         echo "$script is exclusive to DArchOS standard version... skipping"
         return
     fi
